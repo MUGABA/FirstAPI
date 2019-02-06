@@ -18,7 +18,7 @@ class IncidentList:
 		return self.user_list
 
 	def add_incident(self,incident):
-		new_imcident = incident.__dict__
+		new_incident = incident.__dict__
 		return incident_list.append(new_imcident)
 
 	def add_user(self, user):
@@ -47,7 +47,7 @@ class IncidentList:
 			return len(self.user_list) + 1
 
 
-    def fetch_specic_incident(self, id):
+    def fetch_specific_incident(self, id):
         specific_incident = [incident for incident in self.incident_list \
         if incident['incident_id']==id]
         try:
