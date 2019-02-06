@@ -5,7 +5,8 @@ from api.models.validators import Validator
 from api.models.incidents import IncidentList
 from datetime import datetime
 
-appblueprint = Blueprint('api', __name__)\
+# appblueprint = Blueprint('/vi/api/', __name__)
+appblueprint = Blueprint('api', __name__)
 incident = IncidentList()
 is_valid = Validator()
 

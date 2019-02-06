@@ -19,12 +19,12 @@ class IncidentList:
 
 	def add_incident(self,incident):
 		new_incident = incident.__dict__
-		return incident_list.append(new_imcident)
+		return self.incident_list.append(new_incident)
 
-	def add_user(self, user):
+	def add_user(self,user):
 
 		new_user =  user.__dict__
-		return user_list.append(new_user)
+		return self.user_list.append(new_user)
 
 	def retreave_incidents(self):
 		return [incidents.__dict__ for incidents in incident_list]
@@ -47,13 +47,14 @@ class IncidentList:
 			return len(self.user_list) + 1
 
 
-    def fetch_specific_incident(self, id):
-        specific_incident = [incident for incident in self.incident_list \
-        if incident['incident_id']==id]
-        try:
-            return specific_incident[0]
-        except IndexError:
-            return None
+	def fetch_specific_incident(self, id):
+		specific_incident = [incident for incident in self.incident_list if incident['incident_id '] == id]
+
+		try:
+			return specific_incident[o]
+
+		except IndexError:
+			return
 
 
 

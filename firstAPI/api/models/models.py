@@ -2,7 +2,7 @@ import uuid
 
 class User:
 
-	def __init__(self,user_id, firstname, lastname,othername,email,phone_number
+	def __init__(self,user_id, firstname, lastname,othername,email,phone_number,
 					username, registered,is_admin):
 
 
