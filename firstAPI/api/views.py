@@ -5,7 +5,7 @@ from api.models.validators import Validator
 from api.models.incidents import IncidentList
 from datetime import datetime
 
-# appblueprint = Blueprint('/vi/api/', __name__)
+
 appblueprint = Blueprint('api', __name__)
 incident = IncidentList()
 is_valid = Validator()
@@ -23,7 +23,8 @@ def register_users():
 	or not request.get_json()['email'] or not request.get_json()['phone_number'] \
 	or not request.get_json()['username']:
 
-		return jsonify({"message":"Hello There"})
+		return jsonify({"message":"Input field cannot be null"})
+
 
 
 	firstname,lastname,othername,email,phone_number,username = \
@@ -31,20 +32,21 @@ def register_users():
 	request.get_json()['othername'], request.get_json()['email'], \
 	request.get_json()['phone_number'], request.get_json()['username']
 
-	user_id = Incident.user_id_generator()
+	user_id = incident.user_id_generator()
 
 	is_admin = False
 
 	registerd = date_today = datetime.now().strftime('%d%m%y %H%M')
 	new_user = User(user_id, firstname, lastname, othername, email, phone_number, username, registerd, is_admin)
+	incident.add_user(new_user)
 
 	return jsonify({"Status Code": 201, "User": incident.user_list[-1]}),201
 
 
-	@appblueprint.route('/users')
-	def fetch_all_users():
+@appblueprint.route('/users')
+def fetch_all_users():
 
-		return jsonify({"Users":incident.fetch_all_users()}),200
+	return jsonify({"Users":incident.fetch_all_users()}),200
 
 
 @appblueprint.route('/red-flags')
@@ -55,7 +57,7 @@ def fetch_all_incidents():
 @appblueprint.route('/incidents', methods = ['POST'])
 def report_incident():
 
-	if not request.json or not request.get_json()['incident_type'] \
+	if not request.json or not request.get_json()['incident_type']  \
 	or not request.get_json()['created_by']  \
 	or not request.get_json()['status'] or not request.get_json()['location'] \
 	or not request.get_json()['images'] or not request.get_json()['videos'] \
@@ -65,7 +67,7 @@ def report_incident():
 
 	incident_type, created_by, status, location, images, videos, comment = \
 	request.get_json()['incident_type'], request.get_json()['created_by'], \
-	request.get_json()['status'], request.get_json()['location'], 
+	request.get_json()['status'], request.get_json()['location'], \
 	request.get_json()['images'], request.get_json()['videos'], request.get_json()['comment']
 
 
@@ -80,13 +82,11 @@ def report_incident():
 	return jsonify({"incident":incident.incident_list[-1]}),201
 
 
-@appblueprint.route('/red-flags/<int:redflag_id>',methods = ['POST'])
+@appblueprint.route('/red-flags/<int:redflag_id>',methods = ['GET'])
 def fetch_specific_red_flag(redflag_id):
 
 	if not incident.fetch_specific_incident(redflag_id):
-
 		return jsonify({"Error": "No incident found"})
-
 	return jsonify({"red_flag": incident.fetch_specific_incident(redflag_id)})
 
 @appblueprint.route('/red-flags/<int:redflag_id>/location',methods = ['PATCH'])
@@ -107,7 +107,7 @@ def patch_redflag_location(redflag_id):
 
 
 @appblueprint.route('/red-flags/<int:redflag_id>/comment',methods = ['PATCH'])
-def patch_redflag_comment():
+def patch_redflag_comment(redflag_id):
 	redflag = incident.fetch_specific_incident(redflag_id)
 
 	if redflag:
@@ -119,6 +119,19 @@ def patch_redflag_comment():
 
 	else:
 		return jsonify({"Status": 200, "message": "no Incident found"})
+
+@appblueprint.route('/red-flags/<int:redflag_id>', methods = ['DELETE'])
+def delete_specific_incident(redflag_id):
+	redflag = incident.fetch_specific_incident(redflag_id)
+
+	if redflag:
+		incident.incident_list.remove(redflag)
+
+		return jsonify({"message":"incident has been removed "})
+
+	else:
+		return jsonify({"Status Code":200, "message" : "no incident found" })
+
 
 
 
